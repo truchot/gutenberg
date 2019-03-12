@@ -49,7 +49,7 @@ class LegacyWidgetEdit extends Component {
 			setAttributes,
 		} = this.props;
 		const { isPreview } = this.state;
-		const { identifier, isCallbackWidget } = attributes;
+		const { identifier, isCallbackWidget, hasEditForm } = attributes;
 		const widgetObject = identifier && availableLegacyWidgets[ identifier ];
 		if ( ! widgetObject ) {
 			let placeholderContent;
@@ -67,6 +67,7 @@ class LegacyWidgetEdit extends Component {
 							instance: {},
 							identifier: value,
 							isCallbackWidget: availableLegacyWidgets[ value ].isCallbackWidget,
+							hasEditForm: availableLegacyWidgets[ value ].hasEditForm,
 						} ) }
 						options={ [ { value: 'none', label: 'Select widget' } ].concat(
 							map( availableLegacyWidgets, ( widget, key ) => {
@@ -116,7 +117,7 @@ class LegacyWidgetEdit extends Component {
 							icon="update"
 						>
 						</IconButton>
-						{ ! isCallbackWidget && (
+						{ hasEditForm && (
 							<Fragment>
 								<Button
 									className={ `components-tab-button ${ ! isPreview ? 'is-active' : '' }` }
@@ -135,11 +136,12 @@ class LegacyWidgetEdit extends Component {
 					</Toolbar>
 				</BlockControls>
 				{ inspectorControls }
-				{ ! isCallbackWidget && (
+				{ hasEditForm && (
 					<WidgetEditHandler
 						isVisible={ ! isPreview }
 						identifier={ attributes.identifier }
 						instance={ attributes.instance }
+						isCallbackWidget={ isCallbackWidget }
 						onInstanceChange={
 							( newInstance ) => {
 								this.props.setAttributes( {
@@ -149,7 +151,7 @@ class LegacyWidgetEdit extends Component {
 						}
 					/>
 				) }
-				{ ( isPreview || isCallbackWidget ) && this.renderWidgetPreview() }
+				{ ( isPreview || ! hasEditForm ) && this.renderWidgetPreview() }
 			</Fragment>
 		);
 	}
