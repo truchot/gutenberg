@@ -1,11 +1,12 @@
-## 7.3.0 (Unreleased)
+## Unreleased
 
 ### New Features
 
 - Added a new `render` property to `FormFileUpload` component. Allowing users of the component to custom the UI for their needs.
 - Added a new `BaseControl.VisualLabel` component.
 - Added a new `preview` prop to the `Placeholder` component which allows to display a preview, for example a media preview when the Placeholder is used in media editing contexts.
-- Added a new `anchorRect` prop to `Popover` which enables a developer to provide a custom `DOMRect` object at which to position the popover.
+- `DropdownMenu` now supports passing a [render prop](https://reactjs.org/docs/render-props.html#using-props-other-than-render) as children for more advanced customization.
+- Added a new `DropdownMenuSeparator` component to be used in the new `DropdownMenu` children function option.
 
 ### Bug fixes
 
