@@ -927,6 +927,8 @@ one or more replacement blocks.
 
  * clientIds: Block client ID(s) to replace.
  * blocks: Replacement block(s).
+ * indexToSelect: Index of replacement block to
+                                         select.
 
 ### replaceBlock
 

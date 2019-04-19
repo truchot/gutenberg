@@ -733,8 +733,8 @@ const applyWithDispatch = withDispatch( ( dispatch, ownProps, { select } ) => {
 				}
 			}
 		},
-		onReplace( blocks ) {
-			replaceBlocks( [ ownProps.clientId ], blocks );
+		onReplace( blocks, indexToSelect ) {
+			replaceBlocks( [ ownProps.clientId ], blocks, indexToSelect );
 		},
 		onMetaChange( updatedMeta ) {
 			const { getSettings } = select( 'core/block-editor' );
