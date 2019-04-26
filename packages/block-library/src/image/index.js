@@ -7,7 +7,7 @@ import classnames from 'classnames';
  * WordPress dependencies
  */
 import { RichText } from '@wordpress/block-editor';
-import { __ } from '@wordpress/i18n';
+import { __, _x, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -25,6 +25,16 @@ export { metadata, name };
 export const settings = {
 	title: __( 'Image' ),
 	description: __( 'Insert an image to make a visual statement.' ),
+	getAccessibilityLabel( attributes ) {
+		const { caption, alt } = attributes;
+
+		return sprintf(
+			/* translators: accessibility text. 1: image alt text. 2: image caption. */
+			_x( '%1$s. %2$s', 'Image block accessibility text: alt, caption' ),
+			alt,
+			caption
+		);
+	},
 	icon,
 	keywords: [
 		'img', // "img" is not translated as it is intended to reflect the HTML <img> tag.

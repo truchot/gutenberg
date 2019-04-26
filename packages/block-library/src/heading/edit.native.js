@@ -8,16 +8,14 @@ import styles from './editor.scss';
  * External dependencies
  */
 import { View } from 'react-native';
-import { isEmpty } from 'lodash';
 
 /**
  * WordPress dependencies
  */
-import { __, sprintf } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { RichText, BlockControls } from '@wordpress/block-editor';
 import { createBlock } from '@wordpress/blocks';
-import { create } from '@wordpress/rich-text';
 
 const name = 'core/heading';
 
@@ -26,8 +24,6 @@ class HeadingEdit extends Component {
 		super( props );
 
 		this.splitBlock = this.splitBlock.bind( this );
-		this.accessibilityContent = this.accessibilityContent.bind( this );
-		props.setAttributes( { getAccessibilityContent: this.accessibilityContent } );
 	}
 
 	/**
@@ -74,32 +70,6 @@ class HeadingEdit extends Component {
 			// of before will be strictly equal to the current content.
 			setAttributes( { content: before } );
 		}
-	}
-
-	accessibilityContent() {
-		const { attributes } = this.props;
-		const { content, level } = attributes;
-
-		return isEmpty( content ) ?
-			sprintf(
-				/* translators: accessibility text. %s: heading level. */
-				__( 'Level %s. Empty.' ),
-				level
-			) :
-			sprintf(
-				/* translators: accessibility text. 1: heading level. 2: heading content. */
-				__( 'Level %1$s. %2$s' ),
-				level,
-				this.plainTextContent( content )
-			);
-	}
-
-	plainTextContent( html ) {
-		const result = create( { html } );
-		if ( result ) {
-			return result.text;
-		}
-		return '';
 	}
 
 	render() {
