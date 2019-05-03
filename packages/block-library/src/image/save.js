@@ -22,12 +22,13 @@ export default function save( { attributes } ) {
 		height,
 		id,
 		linkTarget,
+		mediaSizeClass,
 	} = attributes;
 
 	const classes = classnames( {
 		[ `align${ align }` ]: align,
 		'is-resized': width || height,
-	} );
+	}, mediaSizeClass );
 
 	const image = (
 		<img
