@@ -29,10 +29,17 @@ function gutenberg_widgets_init( $hook ) {
 			return;
 	}
 
+	$init_script = 'wp.editWidgets.initialize( "widgets-editor", %s );';
+
+	$widget_editor_settings = array(
+		'allowedMimeTypes' => get_allowed_mime_types(),
+	);
+
 	wp_add_inline_script(
 		'wp-edit-widgets',
-		'wp.editWidgets.initialize( "widgets-editor" );'
+		sprintf( $init_script, wp_json_encode( $widget_editor_settings ) )
 	);
+
 	// Preload server-registered block schemas.
 	wp_add_inline_script(
 		'wp-blocks',

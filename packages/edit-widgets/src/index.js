@@ -14,7 +14,8 @@ import Layout from './components/layout';
  *
  * @param {string} id Id of the root element to render the screen.
  */
-export function initialize( id ) {
+export function initialize( id, settings ) {
+	console.log( id, settings );
 	registerCoreBlocks();
 	render(
 		<Layout />,
