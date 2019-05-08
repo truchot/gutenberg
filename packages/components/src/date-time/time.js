@@ -33,6 +33,7 @@ class TimePicker extends Component {
 			am: true,
 			date: null,
 		};
+		this.changeDate = this.changeDate.bind( this );
 		this.updateMonth = this.updateMonth.bind( this );
 		this.onChangeMonth = this.onChangeMonth.bind( this );
 		this.updateDay = this.updateDay.bind( this );
@@ -62,6 +63,12 @@ class TimePicker extends Component {
 		}
 	}
 
+	changeDate( newDate ) {
+		const dateWithStartOfMinutes = newDate.clone().startOf( 'minute' );
+		this.setState( { date: dateWithStartOfMinutes } );
+		this.props.onChange( newDate.format( TIMEZONELESS_FORMAT ) );
+	}
+
 	getMaxHours() {
 		return this.props.is12Hour ? 12 : 23;
 	}
@@ -83,7 +90,7 @@ class TimePicker extends Component {
 	}
 
 	updateHours() {
-		const { is12Hour, onChange } = this.props;
+		const { is12Hour } = this.props;
 		const { am, hours, date } = this.state;
 		const value = parseInt( hours, 10 );
 		if (
@@ -98,12 +105,10 @@ class TimePicker extends Component {
 		const newDate = is12Hour ?
 			date.clone().hours( am === 'AM' ? value % 12 : ( ( ( value % 12 ) + 12 ) % 24 ) ) :
 			date.clone().hours( value );
-		this.setState( { date: newDate } );
-		onChange( newDate.format( TIMEZONELESS_FORMAT ) );
+		this.changeDate( newDate );
 	}
 
 	updateMinutes() {
-		const { onChange } = this.props;
 		const { minutes, date } = this.state;
 		const value = parseInt( minutes, 10 );
 		if ( ! isInteger( value ) || value < 0 || value > 59 ) {
@@ -111,12 +116,10 @@ class TimePicker extends Component {
 			return;
 		}
 		const newDate = date.clone().minutes( value );
-		this.setState( { date: newDate } );
-		onChange( newDate.format( TIMEZONELESS_FORMAT ) );
+		this.changeDate( newDate );
 	}
 
 	updateDay() {
-		const { onChange } = this.props;
 		const { day, date } = this.state;
 		const value = parseInt( day, 10 );
 		if ( ! isInteger( value ) || value < 1 || value > 31 ) {
@@ -124,12 +127,10 @@ class TimePicker extends Component {
 			return;
 		}
 		const newDate = date.clone().date( value );
-		this.setState( { date: newDate } );
-		onChange( newDate.format( TIMEZONELESS_FORMAT ) );
+		this.changeDate( newDate );
 	}
 
 	updateMonth() {
-		const { onChange } = this.props;
 		const { month, date } = this.state;
 		const value = parseInt( month, 10 );
 		if ( ! isInteger( value ) || value < 1 || value > 12 ) {
@@ -137,12 +138,10 @@ class TimePicker extends Component {
 			return;
 		}
 		const newDate = date.clone().month( value - 1 );
-		this.setState( { date: newDate } );
-		onChange( newDate.format( TIMEZONELESS_FORMAT ) );
+		this.changeDate( newDate );
 	}
 
 	updateYear() {
-		const { onChange } = this.props;
 		const { year, date } = this.state;
 		const value = parseInt( year, 10 );
 		if ( ! isInteger( value ) || value < 0 || value > 9999 ) {
@@ -150,13 +149,11 @@ class TimePicker extends Component {
 			return;
 		}
 		const newDate = date.clone().year( value );
-		this.setState( { date: newDate } );
-		onChange( newDate.format( TIMEZONELESS_FORMAT ) );
+		this.changeDate( newDate );
 	}
 
 	updateAmPm( value ) {
 		return () => {
-			const { onChange } = this.props;
 			const { am, date, hours } = this.state;
 			if ( am === value ) {
 				return;
@@ -167,8 +164,7 @@ class TimePicker extends Component {
 			} else {
 				newDate = date.clone().hours( parseInt( hours, 10 ) % 12 );
 			}
-			this.setState( { date: newDate } );
-			onChange( newDate.format( TIMEZONELESS_FORMAT ) );
+			this.changeDate( newDate );
 		};
 	}
 
