@@ -7,11 +7,7 @@ import { noop } from 'lodash';
  * WordPress dependencies
  */
 import { select } from '@wordpress/data';
-
-/**
- * Internal dependencies
- */
-import { mediaUpload } from './media-upload';
+import { mediaUpload } from '@wordpress/media-upload';
 
 /**
  * Upload a media file when the file upload button is activated.
