@@ -8,7 +8,6 @@ import {
 	omit,
 	pickBy,
 } from 'lodash';
-import memize from 'memize';
 
 /**
  * WordPress dependencies
@@ -146,11 +145,6 @@ export class RichText extends Component {
 		this.handleHorizontalNavigation = this.handleHorizontalNavigation.bind( this );
 		this.onPointerDown = this.onPointerDown.bind( this );
 
-		this.formatToValue = memize(
-			this.formatToValue.bind( this ),
-			{ maxSize: 1 }
-		);
-
 		this.patterns = getPatterns( {
 			onReplace,
 			valueToFormat: this.valueToFormat,
@@ -165,6 +159,7 @@ export class RichText extends Component {
 
 		// Internal values that are update synchronously, unlike props.
 		this.value = value;
+		this.internalValue = this.formatToValue( value );
 		this.selectionStart = selectionStart;
 		this.selectionEnd = selectionEnd;
 	}
@@ -196,8 +191,8 @@ export class RichText extends Component {
 	 * @return {Object} The current record (value and selection).
 	 */
 	getRecord() {
-		const { value, selectionStart: start, selectionEnd: end } = this.props;
-		const { formats, replacements, text } = this.formatToValue( value );
+		const { selectionStart: start, selectionEnd: end } = this.props;
+		const { formats, replacements, text } = this.internalValue;
 		const { activeFormats } = this.state;
 
 		return { formats, replacements, text, start, end, activeFormats };
@@ -463,6 +458,7 @@ export class RichText extends Component {
 
 		// Reuse the current references.
 		const value = this.getRecord();
+		const formats = createPrepareEditableTree( this.props )( value );
 
 		value.start = start;
 		value.end = end;
@@ -482,9 +478,9 @@ export class RichText extends Component {
 				const isForward = start < this.props.selectionStart;
 
 				if ( isForward ) {
-					activeFormats = value.formats[ start ] || [];
+					activeFormats = formats[ start ] || [];
 				} else {
-					activeFormats = value.formats[ start - 1 ] || [];
+					activeFormats = formats[ start - 1 ] || [];
 				}
 			}
 
@@ -543,6 +539,7 @@ export class RichText extends Component {
 		} );
 
 		this.value = this.valueToFormat( record );
+		this.internalValue = record;
 		this.props.onChange( this.value );
 		this.setState( { activeFormats } );
 		this.props.onSelectionChange( start, end );
@@ -767,8 +764,8 @@ export class RichText extends Component {
 	 * @param  {SyntheticEvent} event A synthetic keyboard event.
 	 */
 	handleHorizontalNavigation( event ) {
-		const value = this.createRecord();
-		const { formats, text, start, end } = value;
+		const value = this.getRecord();
+		const { text, start, end } = value;
 		const { activeFormats = [] } = this.state;
 		const collapsed = isCollapsed( value );
 		// To do: ideally, we should look at visual position instead.
@@ -797,6 +794,7 @@ export class RichText extends Component {
 			return;
 		}
 
+		const formats = createPrepareEditableTree( this.props )( value );
 		const formatsBefore = formats[ start - 1 ] || [];
 		const formatsAfter = formats[ start ] || [];
 
@@ -953,6 +951,7 @@ export class RichText extends Component {
 		}
 
 		this.value = value;
+		this.internalValue = record;
 		this.selectionStart = record.start;
 		this.selectionEnd = record.end;
 	}
